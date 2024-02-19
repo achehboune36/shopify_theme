@@ -1,0 +1,154 @@
+{{ section.settings.custom_liquid }}
+{% schema %}
+{
+   "name": "Custom product Liquid",
+   "settings": [
+   {
+      "type": "liquid",
+      "id": "custom_liquid",
+      "label": "Custom Liquid",
+      "info": "Add app snippets or other liquid code to create advanced customizations."
+   }],
+   "presets": [
+   {
+      "name": "Custom product Liquid"
+   }]
+}
+{% endschema %}
+{% stylesheet %}
+      body {
+      font-family: Arial, Helvetica, sans-serif;
+      background-color: #000;
+      color: #fff;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    input[type="text"],input[type="email"],input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      margin: 5px 0;
+      border: 1px solid black;
+      background: #fff;
+      color: #000;
+    }
+
+    input[type="submit"] {
+      background-color: #000;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      cursor: pointer;
+    }
+
+    input[type="submit"]:hover {
+      background-color: #fff;
+      color: #000;
+    }
+  {% endstylesheet %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+</head>
+<body>
+
+<div class="container">
+  <h2>connect to abxr</h2>
+  <form  method="get">
+    <input type="email" name="name" placeholder="email" required>
+    <input type="password" name="password" placeholder="password" required>
+<div>
+   
+</div>
+    <input type="submit" value="connect">
+  </form>
+
+
+
+
+<div class="container">
+  <h2>Add Product</h2>
+  <form action="/submit_contact" method="post">
+    <input type="text" name="name" id="product_name" placeholder="Product Name" required>
+    <select name="assets" id="assets">
+        <option value="model3d">Model3d</option>
+        <option value="character">Character</option>
+        <option value="Animation">Mercedes</option>
+        <option value="Sound">Sound</option>
+        <option value="Effect">Effect</option>
+</select>
+<div>
+    <input type="file" id="file" required>
+</div>
+    <input type="submit" value="Add">
+  </form>
+</div>
+
+
+
+
+
+  
+</div>
+</body>
+</html>
+{% javascript %}
+  const connect=document.querySelector('input[type="submit"]');
+connect.addEventListener('click',(e)=>{
+    e.preventDefault()
+    const email=document.querySelector('input[type="email"]');
+    const password=document.querySelector('input[type="password"]');
+    const name=document.querySelector('#product_name');
+    const file=document.querySelector('#file');
+    let=asset_url=""
+    console.log(email.value)
+    console.log(password.value)
+    fetch("https://dev-api.abxrengine.com/auth/jwt/create/",{
+        method: "POST",
+        body: JSON.stringify({
+            email: email.value,
+            password: password.value
+        }),
+        headers: {
+          "Content-type": "application/json; charset=UTF-8"
+        }
+      }).then((response) => response.json())
+      .then((json) => {
+        console.log(assets.value)
+        if(assets.value=="model3d"){
+          asset_url="https://dev-api.abxrengine.com/assets/models/create/"
+        }
+        else if(assets.value=="character"){
+          asset_url="https://dev-api.abxrengine.com/assets/characters/create/"
+        }
+        fetch(asset_url,{
+        method: "POST",
+        body: JSON.stringify({
+            position_x: 0,
+            position_y: 0,
+            position_z: 0,
+            rotation_x: 3,
+            rotation_y: 3,
+            rotation_z: 4,
+            name:name.value,
+            privacy:"Public",
+            scale:1
+        }),
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+          "Authorization": "Bearer "+json['access']
+        }
+      }).then((response) => response.json())
+        
+        console.log(response.json())
+      })
+})
+
+{% endjavascript %}

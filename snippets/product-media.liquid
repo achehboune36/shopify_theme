@@ -3,37 +3,52 @@
 
     Accepts:
     - media: {Object} Product Media object
-    - loop: {Boolean} Enable video looping (optional)
-    - variant_image: {Boolean} Whether or not media is associated with a variant
+    -loop: {Boolean} Enable video looping (optional)
+    -variant_image: {Boolean} Whether or not media is associated with a variant
+    - productType: {String} Type of the product
+    - productId: {String} ID of the product
+    - creatorId: {String} ID of the creator
 
     Usage:
     {% render 'product-media',
       media: media,
       loop: section.settings.enable_video_looping,
-      variant_image: true
+      variant_image: true,
+      productType: productType,
+      productId: productId,
+      creatorId: creatorId
     %}
 {% endcomment %}
 
 {%- if media.media_type == 'image' -%}
-  <img
-    class="global-media-settings global-media-settings--no-shadow{% if variant_image %} product__media-item--variant{% endif %}"
-    srcset="{%- if media.preview_image.width >= 550 -%}{{ media.preview_image | image_url: width: 550 }} 550w,{%- endif -%}
-            {%- if media.preview_image.width >= 1100 -%}{{ media.preview_image | image_url: width: 1100 }} 1100w,{%- endif -%}
-            {%- if media.preview_image.width >= 1445 -%}{{ media.preview_image | image_url: width: 1445 }} 1445w,{%- endif -%}
-            {%- if media.preview_image.width >= 1680 -%}{{ media.preview_image | image_url: width: 1680 }} 1680w,{%- endif -%}
-            {%- if media.preview_image.width >= 2048 -%}{{ media.preview_image | image_url: width: 2048 }} 2048w,{%- endif -%}
-            {%- if media.preview_image.width >= 2200 -%}{{ media.preview_image | image_url: width: 2200 }} 2200w,{%- endif -%}
-            {%- if media.preview_image.width >= 2890 -%}{{ media.preview_image | image_url: width: 2890 }} 2890w,{%- endif -%}
-            {%- if media.preview_image.width >= 4096 -%}{{ media.preview_image | image_url: width: 4096 }} 4096w,{%- endif -%}
-            {{ media.preview_image | image_url }} {{ media.preview_image.width }}w"
-    sizes="(min-width: 750px) calc(100vw - 22rem), 1100px"
-    src="{{ media.preview_image | image_url: width: 1445 }}"
-    alt="{{ media.alt | escape }}"
-    loading="lazy"
-    width="1100"
-    height="{{ 1100 | divided_by: media.preview_image.aspect_ratio | ceil }}"
-    data-media-id="{{ media.id }}"
-  >
+ <!-- Assume this is your product image HTML element -->
+<script>
+    console.log('Product Type:', '{{ productType }}');
+    console.log('Product ID:', '{{ productId }}');
+    console.log('Creator ID:', '{{ creatorId }}');
+</script>
+<img
+  class="global-media-settings global-media-settings--no-shadow{% if variant_image %} product__media-item--variant{% endif %}"
+  srcset="{%- if media.preview_image.width >= 550 -%}{{ media.preview_image | image_url: width: 550 }} 550w,{%- endif -%}
+          {%- if media.preview_image.width >= 1100 -%}{{ media.preview_image | image_url: width: 1100 }} 1100w,{%- endif -%}
+          {%- if media.preview_image.width >= 1445 -%}{{ media.preview_image | image_url: width: 1445 }} 1445w,{%- endif -%}
+          {%- if media.preview_image.width >= 1680 -%}{{ media.preview_image | image_url: width: 1680 }} 1680w,{%- endif -%}
+          {%- if media.preview_image.width >= 2048 -%}{{ media.preview_image | image_url: width: 2048 }} 2048w,{%- endif -%}
+          {%- if media.preview_image.width >= 2200 -%}{{ media.preview_image | image_url: width: 2200 }} 2200w,{%- endif -%}
+          {%- if media.preview_image.width >= 2890 -%}{{ media.preview_image | image_url: width: 2890 }} 2890w,{%- endif -%}
+          {%- if media.preview_image.width >= 4096 -%}{{ media.preview_image | image_url: width: 4096 }} 4096w,{%- endif -%}
+          {{ media.preview_image | image_url }} {{ media.preview_image.width }}w"
+  sizes="(min-width: 750px) calc(100vw - 22rem), 1100px"
+  src="{{ media.preview_image | image_url: width: 1445 }}"
+  alt="{{ media.alt | escape }}"
+  loading="lazy"
+  width="1100"
+  height="{{ 1100 | divided_by: media.preview_image.aspect_ratio | ceil }}"
+  data-media-id="{{ media.id }}"
+  onclick="{% if productType == 'project' %}window.location.href='https://dev.abxrengine.com/projects/play/{{ projectId }}/{{ creatorId }}';{% endif %}"
+>
+
+
 {%- else -%}
   {%- if media.media_type == 'model' -%}
     <div class="product-media-modal__model" data-media-id="{{ media.id }}">
