@@ -273,6 +273,8 @@
       {{ 'accessibility.skip_to_text' | t }}
     </a>
 
+    <div id="custom-greeting"></div>
+
     {%- if settings.cart_type == 'drawer' -%}
       {%- render 'cart-drawer' -%}
     {%- endif -%}
@@ -330,6 +332,40 @@
         recipientFormCollapsed: `{{ 'recipient.form.collapsed' | t }}`,
       };
     </script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+          function getQueryParam(param) {
+              const urlParams = new URLSearchParams(window.location.search);
+              return urlParams.get(param);
+          }
+
+          const userToken = getQueryParam('userToken');
+          console.log('token: ', userToken)
+
+          if (userToken) {
+              history.replaceState(null, '', window.location.pathname);
+          }
+
+          if (userToken) {
+              fetch('https://dev-api.abxrengine.com/auth/users/me/', {
+                  method: 'GET',
+                  headers: {
+                      'Authorization': `Bearer ${userToken}`,
+                      'Content-Type': 'application/json',
+                  },
+              })
+              .then(response => response.json())
+              .then(data => {
+                  const greetingElement = document.getElementById('custom-greeting');
+                  if (greetingElement) {
+                      greetingElement.innerHTML = `Hello, ${data.email}`;
+                  }
+              })
+              .catch(error => console.error('Error fetching user data:', error));
+          }
+      });
+      </script>
 
     {%- if settings.predictive_search_enabled -%}
       <script src="{{ 'predictive-search.js' | asset_url }}" defer="defer"></script>
