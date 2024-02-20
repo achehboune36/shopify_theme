@@ -357,6 +357,10 @@
               })
               .then(response => response.json())
               .then(data => {
+
+                  localStorage.setItem('userToken', userToken);
+                  localStorage.setItem('userEmail', data.email);
+
                   const greetingElement = document.getElementById('custom-greeting');
                   if (greetingElement) {
                       greetingElement.innerHTML = `Hello, ${data.email}`;
